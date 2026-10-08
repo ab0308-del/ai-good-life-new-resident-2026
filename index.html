@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 好生活｜七堂課簡報</title>
+  <meta name="description" content="115 新住民記者班 Part 2：一起學、一起玩、一起用 AI。">
+  <style>
+    :root {
+      --ink: #1e293b;
+      --muted: #64748b;
+      --paper: #fffdf7;
+      --cream: #fff5d9;
+      --coral: #ef6a5b;
+      --navy: #183153;
+      --teal: #1f9d8a;
+      --yellow: #f4c95d;
+      --line: rgba(24,49,83,.14);
+      --shadow: 0 22px 70px rgba(24,49,83,.14);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(244,201,93,.28), transparent 25%),
+        radial-gradient(circle at 92% 20%, rgba(31,157,138,.16), transparent 28%),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 64px;
+      padding: 10px 22px;
+      color: white;
+      background: rgba(24,49,83,.94);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 30px rgba(15,23,42,.16);
+    }
+    .brand { font-weight: 900; letter-spacing: .04em; }
+    .brand small { display: block; font-size: .72rem; font-weight: 500; opacity: .72; }
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .controls button, .controls a {
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      padding: 8px 13px;
+      color: white;
+      background: rgba(255,255,255,.08);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .controls button:hover, .controls a:hover { background: rgba(255,255,255,.18); }
+    .progress { position: fixed; top: 64px; left: 0; right: 0; height: 4px; z-index: 31; background: rgba(24,49,83,.08); }
+    .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg,var(--coral),var(--yellow),var(--teal)); transition: width .2s; }
+    main { padding-top: 68px; }
+    .slide {
+      min-height: calc(100vh - 68px);
+      display: grid;
+      align-items: center;
+      padding: 64px clamp(22px, 6vw, 92px);
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 68px;
+    }
+    .slide-inner { width: min(1180px, 100%); margin: auto; }
+    .hero-grid, .two-col { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(28px,5vw,72px); align-items: center; }
+    .eyebrow { color: var(--coral); font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 12px 0 20px; font-size: clamp(3rem,8vw,7.2rem); line-height: .94; letter-spacing: -.06em; color: var(--navy); }
+    h2 { margin: 8px 0 18px; font-size: clamp(2.25rem,5vw,4.7rem); line-height: 1.04; letter-spacing: -.045em; color: var(--navy); }
+    h3 { margin: 0 0 10px; font-size: 1.25rem; color: var(--navy); }
+    p { line-height: 1.75; }
+    .lead { font-size: clamp(1.08rem,2vw,1.45rem); color: var(--muted); max-width: 46rem; }
+    .hero-card {
+      position: relative;
+      min-height: 480px;
+      overflow: hidden;
+      border-radius: 38px;
+      background: linear-gradient(145deg,#17304e,#275f6c);
+      box-shadow: var(--shadow);
+    }
+    .hero-card::before, .hero-card::after { content:""; position:absolute; border-radius:50%; }
+    .hero-card::before { width: 280px; height: 280px; right: -30px; top: -40px; background: var(--yellow); }
+    .hero-card::after { width: 220px; height: 220px; left: -60px; bottom: -50px; background: var(--coral); }
+    .hero-symbol { position:absolute; inset: 0; display:grid; place-items:center; font-size: clamp(8rem,18vw,14rem); filter: drop-shadow(0 18px 18px rgba(0,0,0,.2)); transform: rotate(-4deg); }
+    .hero-note { position:absolute; right:26px; bottom:26px; z-index:2; max-width:310px; padding:18px 20px; border-radius:20px; background:rgba(255,255,255,.92); font-weight:800; }
+    .pills { display:flex; flex-wrap:wrap; gap:10px; margin-top:25px; }
+    .pill { padding:9px 14px; border-radius:999px; background:white; border:1px solid var(--line); font-weight:800; box-shadow:0 8px 24px rgba(24,49,83,.07); }
+    .route { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:32px; }
+    .route-card { min-height:170px; padding:20px; border-radius:24px; background:white; border:1px solid var(--line); box-shadow:0 12px 36px rgba(24,49,83,.07); }
+    .route-card b { display:block; font-size:2.1rem; color:var(--coral); margin-bottom:12px; }
+    .session-mark { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .number { display:grid; place-items:center; width:56px; height:56px; border-radius:18px; background:var(--navy); color:white; font-size:1.65rem; font-weight:900; box-shadow:0 10px 24px rgba(24,49,83,.18); }
+    .verb { font-size:1rem; font-weight:900; color:var(--coral); letter-spacing:.1em; }
+    .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:28px; }
+    .card { padding:24px; border-radius:24px; background:white; border:1px solid var(--line); box-shadow:0 14px 40px rgba(24,49,83,.07); }
+    .card.warm { background:var(--cream); }
+    .card.teal { background:#e6f6f2; }
+    .card.coral { background:#fff0ec; }
+    .steps { counter-reset: step; display:grid; gap:13px; margin-top:24px; }
+    .step { position:relative; padding:16px 18px 16px 58px; border-radius:18px; background:white; border:1px solid var(--line); }
+    .step::before { counter-increment:step; content:counter(step); position:absolute; left:15px; top:13px; display:grid; place-items:center; width:31px; height:31px; border-radius:50%; background:var(--yellow); color:var(--navy); font-weight:900; }
+    .prompt { position:relative; margin-top:20px; padding:24px; border-radius:24px; color:white; background:var(--navy); line-height:1.75; box-shadow:var(--shadow); }
+    .prompt::before { content:"可複製提示詞"; display:inline-block; margin-bottom:10px; color:var(--yellow); font-weight:900; letter-spacing:.08em; }
+    .prompt button { position:absolute; right:16px; top:16px; padding:7px 11px; border:0; border-radius:999px; background:white; color:var(--navy); font-weight:900; cursor:pointer; }
+    .prompt pre { margin:0; white-space:pre-wrap; font:inherit; }
+    .example { padding:26px; border-radius:28px; background:linear-gradient(145deg,#fff,#fff6dd); border:2px dashed rgba(239,106,91,.35); }
+    .example strong { color:var(--coral); }
+    .tool-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+    .tool { text-decoration:none; padding:10px 14px; border-radius:14px; color:white; background:var(--teal); font-weight:900; }
+    .tool:hover { filter:brightness(.95); transform:translateY(-1px); }
+    .checklist { list-style:none; padding:0; margin:18px 0 0; display:grid; gap:10px; }
+    .checklist li { position:relative; padding-left:34px; line-height:1.6; }
+    .checklist li::before { content:"✓"; position:absolute; left:0; top:0; display:grid; place-items:center; width:24px; height:24px; border-radius:8px; background:#dff5ef; color:var(--teal); font-weight:900; }
+    .footer-slide { text-align:center; background:var(--navy); color:white; }
+    .footer-slide h2 { color:white; }
+    .footer-slide .lead { margin-inline:auto; color:rgba(255,255,255,.76); }
+    .big-quote { font-size:clamp(1.8rem,4vw,3.8rem); line-height:1.25; font-weight:900; margin:30px auto; max-width:920px; color:var(--yellow); }
+    .kbd { padding:3px 8px; border-radius:7px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); }
+    @media (max-width: 820px) {
+      .topbar { padding:9px 12px; }
+      .brand small, .controls .wide { display:none; }
+      .slide { padding:52px 20px; min-height:auto; }
+      .hero-grid, .two-col { grid-template-columns:1fr; }
+      .hero-card { min-height:360px; }
+      .route { grid-template-columns:1fr; }
+      .route-card { min-height:auto; }
+      .cards { grid-template-columns:1fr; }
+    }
+    @media print {
+      .topbar,.progress,.prompt button { display:none!important; }
+      main { padding:0; }
+      .slide { min-height:100vh; break-after:page; padding:42px; }
+      body { background:white; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">AI 好生活<small>115 新住民記者班 Part 2</small></div>
+    <div class="controls">
+      <button id="prev" aria-label="上一頁">←</button>
+      <span id="counter">1 / 10</span>
+      <button id="next" aria-label="下一頁">→</button>
+      <a class="wide" href="https://padlet.com/ab0308/115-part-2-s023h6imhc2l6mv6gqy7" target="_blank" rel="noreferrer">開啟 Padlet</a>
+    </div>
+  </header>
+  <div class="progress"><span id="bar"></span></div>
+  <main>
+    <section class="slide" id="cover">
+      <div class="slide-inner hero-grid">
+        <div>
+          <div class="eyebrow">一起學・一起玩・一起用</div>
+          <h1>AI<br>好生活</h1>
+          <p class="lead">從一張照片、一段影片或一篇文章開始，學會觀察、找資料、整理、做簡報，最後說出自己的生活故事。</p>
+          <div class="pills"><span class="pill">手機＋電腦</span><span class="pill">七堂課</span><span class="pill">零壓力實作</span></div>
+        </div>
+        <div class="hero-card" aria-label="手機、電腦與 AI 的象徵插圖">
+          <div class="hero-symbol">📱💻</div>
+          <div class="hero-note">AI 是幫手；看見、選擇與說故事的人，仍然是你。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="map">
+      <div class="slide-inner">
+        <div class="eyebrow">七週學習地圖</div>
+        <h2>把生活經驗，變成能分享的學習成果</h2>
+        <p class="lead">第 1 堂先認識 AI；第 2～6 堂沿著一個專題前進；第 7 堂上台分享。</p>
+        <div class="route">
+          <div class="route-card"><b>看</b>手機拍攝、觀察、提問</div>
+          <div class="route-card"><b>找</b>蒐集資料、整理來源</div>
+          <div class="route-card"><b>整</b>決定怎麼介紹、排順序</div>
+          <div class="route-card"><b>做</b>完成自己的視覺簡報</div>
+          <div class="route-card"><b>說</b>練習表達、修正與分享</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson1">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">1</span><span class="verb">認識 AI・想主題</span></div>
+          <h2>猜猜 AI，畫出我的故事</h2>
+          <p class="lead">認識生成式 AI、提示詞與 AI 幻覺，讓 AI 透過安全的問題認識我，再產生一張代表我的圖像。</p>
+          <div class="tool-row"><a class="tool" href="https://sightengine.com/ai-or-not" target="_blank" rel="noreferrer">AI or Not</a><a class="tool" href="https://gemini.google.com/" target="_blank" rel="noreferrer">Gemini</a></div>
+          <ul class="checklist"><li>看起來很真，不代表一定是真的</li><li>不提供身分證、電話、住址和帳密</li><li>圖片裡不要放文字，避免生成錯字</li></ul>
+        </div>
+        <div>
+          <div class="example"><h3>米的生活例子</h3><p>「我剛到挪威，很多挪威文都看不懂。原來 AI 可以幫我翻譯、解釋，也能陪我練習。」米決定以「小米的挪威生活初體驗」作為專題。</p><hr><h3>阿蘭的角度</h3><p>「原來 AI 可以幫我整理中文。我想介紹我家鄉做的越南春捲。」</p></div>
+          <div class="prompt"><button>複製</button><pre>請一次問我一個簡單問題，了解我的家鄉、興趣、喜歡的事物和想分享的生活故事。不要詢問私人資料。最後幫我整理成 80 字以內的自我介紹，並提出 3 個適合我的專題題目。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson2">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">2</span><span class="verb">看・拍照・觀察・提問</span></div>
+          <h2>手機變成 AI 觀察助手</h2>
+          <p class="lead">先用自己的眼睛看，再讓 Gemini 幫忙描述。區分「看得到的事實」和「AI 的推測」。</p>
+          <div class="steps"><div class="step">拍下一件想了解的物品、標示、通知或場景</div><div class="step">自己先寫下三個觀察</div><div class="step">請 AI 描述並提出問題</div><div class="step">比較 AI 有沒有看錯或猜錯</div></div>
+        </div>
+        <div>
+          <div class="example"><h3>米的生活例子</h3><p>米在超市看到一盒不認識的食品，或收到房東、學校、交通單位的通知，拍給 AI 問：「這張在說什麼？我需要做什麼？有沒有日期或費用？」再確認哪些是照片真的寫的、哪些只是 AI 猜的。</p><hr><h3>阿蘭的角度</h3><p>阿蘭拍下春捲、食材包裝或不熟悉的中文標示，問：「這上面寫什麼？材料中文叫什麼？」</p></div>
+          <div class="prompt"><button>複製</button><pre>請描述這張圖片中直接看得到的內容。把「可以確認的事實」和「根據圖片推測的內容」分開列出，再告訴我你不確定的地方，以及我需要另外查證的資訊。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson3">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">3</span><span class="verb">找・蒐集資料・查來源</span></div>
+          <h2>NotebookLM 資料整理研究室</h2>
+          <p class="lead">把 YouTube、文章、文件、觀察紀錄放進同一個筆記本，從來源中找答案，不讓資料散落各處。</p>
+          <div class="tool-row"><a class="tool" href="https://notebooklm.google.com/" target="_blank" rel="noreferrer">開啟 NotebookLM</a></div>
+          <ul class="checklist"><li>每次先放 2～3 份資料</li><li>注意 YouTube 自動字幕可能有錯</li><li>私人聊天內容要先去除姓名和個資</li><li>保留作者、影片與文章來源</li></ul>
+        </div>
+        <div>
+          <div class="example"><h3>米的生活例子</h3><p>把「冬天在挪威生活要注意什麼」的旅遊資訊、交通網站、影片或生活筆記放入 NotebookLM，整理衣服、交通、日照與生活習慣等重點。</p><hr><h3>阿蘭的角度</h3><p>把家鄉春捲介紹、料理影片和自己的做法放進 NotebookLM，比較「越南春捲有哪些材料？不同地區有什麼差異？」</p></div>
+          <div class="prompt"><button>複製</button><pre>請只根據目前提供的來源，整理 5 個重要重點。每個重點標示它來自哪一份資料，指出不同來源的共同點與差異；如果資料不足，請直接說不知道，不要自行補充。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson4">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">4</span><span class="verb">整・決定我要怎麼說</span></div>
+          <h2>Gamma 簡報規劃師</h2>
+          <p class="lead">先決定聽眾、目的和順序，再請 Gamma 做初稿。AI 排版很快，但「什麼最重要」要由自己決定。</p>
+          <div class="tool-row"><a class="tool" href="https://gamma.app/" target="_blank" rel="noreferrer">開啟 Gamma</a></div>
+          <div class="steps"><div class="step">我想介紹什麼？</div><div class="step">我第一次遇到的困難是什麼？</div><div class="step">我需要準備哪些事情？</div><div class="step">我最喜歡或最特別的是什麼？</div><div class="step">我要提醒新住民什麼？</div><div class="step">最後想分享的一句話是什麼？</div></div>
+        </div>
+        <div>
+          <div class="example"><h3>米的專題架構</h3><p>①為什麼來挪威 ②第一次遇到的困難 ③冬天需要準備的三件事 ④最喜歡的地方 ⑤文化差異 ⑥給下一位新住民的提醒。</p><hr><h3>阿蘭的專題架構</h3><p>①我的家鄉 ②為什麼選春捲 ③材料 ④怎麼做 ⑤我家特別的吃法 ⑥我想分享的事情。</p></div>
+          <div class="prompt"><button>複製</button><pre>請把我的研究資料整理成一份 5～7 頁的簡報大綱。對象是第一次接觸這個主題的人。每頁只放一個重點、三個以內的短句，並提供適合的圖片建議。不要加入來源中沒有的事實。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson5">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">5</span><span class="verb">做・把作品變成自己的</span></div>
+          <h2>Canva 簡報設計師</h2>
+          <p class="lead">把 AI 的初稿換成自己的照片、語氣和故事。漂亮不是唯一目標，清楚、真實、看得懂更重要。</p>
+          <div class="tool-row"><a class="tool" href="https://www.canva.com/" target="_blank" rel="noreferrer">開啟 Canva</a></div>
+          <div class="cards"><div class="card warm"><h3>字要少</h3><p>一頁一個重點，刪掉大段文字。</p></div><div class="card teal"><h3>圖要清楚</h3><p>優先使用自己的照片和可信來源。</p></div><div class="card coral"><h3>像我自己</h3><p>加入自己的經驗、說法和選擇。</p></div><div class="card"><h3>來源要留</h3><p>文章、影片和圖片都要標明來源。</p></div></div>
+        </div>
+        <div>
+          <div class="example"><h3>米的生活例子</h3><p>把自己拍的峽灣、街景、超市和咖啡館照片放進 Canva，把 AI 放的制式圖片換掉，文字改成自己真的會說的話。</p><hr><h3>阿蘭的角度</h3><p>放入自己拍的春捲、家鄉和家人料理的照片，刪掉太難的文字，加入越南文或自己的語氣。</p></div>
+          <div class="prompt"><button>複製</button><pre>請檢查這一頁簡報，保留原意，把文字改成初學者也容易看懂的繁體中文。請控制在標題 12 字以內、重點 3 點以內，每點 20 字以內，並提醒我哪些內容需要標示來源。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson6">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">6</span><span class="verb">說・練習生活溝通與分享</span></div>
+          <h2>我的 AI 學習專題工作坊</h2>
+          <p class="lead">回到原始來源確認內容，讓 AI 協助把中文調整得簡單自然，再練習 2～3 分鐘分享。</p>
+          <div class="steps"><div class="step">30 秒：我是誰、今天介紹什麼</div><div class="step">90 秒：三個最重要的內容</div><div class="step">30 秒：AI 幫了什麼、哪裡曾經出錯</div><div class="step">30 秒：我的感想和想送給大家的話</div></div>
+        </div>
+        <div>
+          <div class="example"><h3>米的生活情境</h3><p>先練習真正會遇到的溝通：「我要去藥局買感冒藥怎麼說？」「我要問公車司機這班車到不到市中心？」再連結到成果分享：「我剛到挪威時，最不習慣的是……」</p><hr><h3>阿蘭的角度</h3><p>練習說：「我來台灣以後，有時候很想念家鄉的味道……」再用自己的照片介紹越南春捲。</p></div>
+          <div class="prompt"><button>複製</button><pre>請把下面的內容改成我上台時可以自然說出的 2～3 分鐘分享稿。使用簡單、口語、容易朗讀的繁體中文，保留我的原意和個人語氣，不要加入我沒有說過的經歷。</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="lesson7">
+      <div class="slide-inner two-col">
+        <div>
+          <div class="session-mark"><span class="number">7</span><span class="verb">分享・我的生活故事</span></div>
+          <h2>我的 AI 好生活成果展</h2>
+          <p class="lead">分享的不是誰最會操作工具，而是我如何把生活經驗整理成一份自己的作品。</p>
+          <ul class="checklist"><li>我的主題是什麼？為什麼選它？</li><li>我收集了哪些資料？</li><li>AI 幫了我哪些事情？</li><li>AI 曾經看錯、說錯或誤解什麼？</li><li>哪些內容是我自己決定和修改的？</li><li>以後我想把這套方法用在哪裡？</li></ul>
+        </div>
+        <div>
+          <div class="example"><h3>米的分享</h3><p>「這是我到挪威後，怎麼用 AI 幫自己跨過語言障礙、找到資料、慢慢適應生活。」</p><hr><h3>阿蘭的分享</h3><p>用自己的照片與經驗介紹越南春捲，也說明：「哪些資料是 AI 幫我整理的，哪些是我自己的故事。」</p></div>
+          <div class="cards"><div class="card warm"><h3>我最喜歡</h3><p>說出一個最有感的發現。</p></div><div class="card teal"><h3>我想問</h3><p>用尊重的方式提出問題。</p></div><div class="card coral"><h3>我學到了</h3><p>把同學的故事帶回自己的生活。</p></div><div class="card"><h3>我會查證</h3><p>重要資訊不只相信 AI。</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="safety">
+      <div class="slide-inner">
+        <div class="eyebrow">每一堂都要記得</div>
+        <h2>AI 使用的八個好習慣</h2>
+        <div class="cards">
+          <div class="card"><h3>1 先觀察</h3><p>先說出自己看到的，再請 AI 幫忙。</p></div>
+          <div class="card"><h3>2 說清楚</h3><p>交代對象、目的、需求與限制。</p></div>
+          <div class="card"><h3>3 看來源</h3><p>沒有來源的內容，不急著當成事實。</p></div>
+          <div class="card"><h3>4 多追問</h3><p>看不懂、不適合，就請 AI 再解釋。</p></div>
+          <div class="card"><h3>5 要查證</h3><p>日期、金錢、健康、交通與權益要再確認。</p></div>
+          <div class="card"><h3>6 自己決定</h3><p>AI 做初稿，最後選擇由我負責。</p></div>
+          <div class="card"><h3>7 保護隱私</h3><p>不輸入帳密、證件、病歷與私人聊天。</p></div>
+          <div class="card"><h3>8 尊重創作</h3><p>保留文章、影片與圖片來源。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide footer-slide" id="end">
+      <div class="slide-inner">
+        <div class="eyebrow">AI 好生活</div>
+        <h2>工具可以幫我們走得快，<br>故事要由自己說。</h2>
+        <div class="big-quote">看・找・整・做・說・分享</div>
+        <p class="lead">使用鍵盤 <span class="kbd">←</span> <span class="kbd">→</span> 切換頁面，或直接上下捲動。</p>
+        <div class="tool-row" style="justify-content:center"><a class="tool" href="https://padlet.com/ab0308/115-part-2-s023h6imhc2l6mv6gqy7" target="_blank" rel="noreferrer">前往課程 Padlet</a></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const counter = document.querySelector('#counter');
+    const bar = document.querySelector('#bar');
+    let active = 0;
+    function update(i) {
+      active = Math.max(0, Math.min(slides.length - 1, i));
+      counter.textContent = `${active + 1} / ${slides.length}`;
+      bar.style.width = `${((active + 1) / slides.length) * 100}%`;
+    }
+    function go(i) { update(i); slides[active].scrollIntoView({behavior:'smooth'}); }
+    document.querySelector('#prev').addEventListener('click', () => go(active - 1));
+    document.querySelector('#next').addEventListener('click', () => go(active + 1));
+    addEventListener('keydown', e => {
+      if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); go(active + 1); }
+      if (['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(active - 1); }
+      if (e.key === 'Home') go(0);
+      if (e.key === 'End') go(slides.length - 1);
+    });
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) update(slides.indexOf(entry.target)); });
+    }, {threshold:.58});
+    slides.forEach(s => io.observe(s));
+    document.querySelectorAll('.prompt button').forEach(btn => btn.addEventListener('click', async () => {
+      const text = btn.parentElement.querySelector('pre').innerText;
+      try { await navigator.clipboard.writeText(text); btn.textContent = '已複製'; setTimeout(() => btn.textContent = '複製', 1400); }
+      catch { btn.textContent = '請手動選取'; }
+    }));
+    update(0);
+  </script>
+</body>
+</html>
