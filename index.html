@@ -19,7 +19,7 @@
       --shadow: 0 22px 70px rgba(24,49,83,.14);
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html, body { height: 100%; overflow: hidden; }
     body {
       margin: 0;
       color: var(--ink);
@@ -48,8 +48,8 @@
     }
     .brand { font-weight: 900; letter-spacing: .04em; }
     .brand small { display: block; font-size: .72rem; font-weight: 500; opacity: .72; }
-    .controls { display: flex; align-items: center; gap: 8px; }
-    .controls button, .controls a {
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .top-actions a {
       border: 1px solid rgba(255,255,255,.28);
       border-radius: 999px;
       padding: 8px 13px;
@@ -58,19 +58,48 @@
       text-decoration: none;
       cursor: pointer;
     }
-    .controls button:hover, .controls a:hover { background: rgba(255,255,255,.18); }
+    .top-actions a:hover { background: rgba(255,255,255,.18); }
     .progress { position: fixed; top: 64px; left: 0; right: 0; height: 4px; z-index: 31; background: rgba(24,49,83,.08); }
     .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg,var(--coral),var(--yellow),var(--teal)); transition: width .2s; }
-    main { padding-top: 68px; }
+    main { position: fixed; inset: 68px 0 76px; overflow: hidden; }
     .slide {
-      min-height: calc(100vh - 68px);
-      display: grid;
+      height: 100%;
+      display: none;
       align-items: center;
       padding: 64px clamp(22px, 6vw, 92px);
-      border-bottom: 1px solid var(--line);
-      scroll-margin-top: 68px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
+    .slide.active { display: grid; }
     .slide-inner { width: min(1180px, 100%); margin: auto; }
+    .bottom-nav {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 35;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 12px 20px;
+      color: white;
+      background: rgba(24,49,83,.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 -8px 30px rgba(15,23,42,.14);
+    }
+    .bottom-nav button {
+      min-width: 128px;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: 999px;
+      padding: 11px 18px;
+      color: white;
+      background: rgba(255,255,255,.1);
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .bottom-nav button:hover:not(:disabled) { background: rgba(255,255,255,.2); transform: translateY(-1px); }
+    .bottom-nav button:disabled { opacity: .35; cursor: not-allowed; }
+    #counter { min-width: 74px; text-align: center; font-weight: 900; }
     .hero-grid, .two-col { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(28px,5vw,72px); align-items: center; }
     .eyebrow { color: var(--coral); font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
     h1 { margin: 12px 0 20px; font-size: clamp(3rem,8vw,7.2rem); line-height: .94; letter-spacing: -.06em; color: var(--navy); }
@@ -126,8 +155,11 @@
     .kbd { padding:3px 8px; border-radius:7px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); }
     @media (max-width: 820px) {
       .topbar { padding:9px 12px; }
-      .brand small, .controls .wide { display:none; }
-      .slide { padding:52px 20px; min-height:auto; }
+      .brand small, .top-actions .wide { display:none; }
+      main { inset:68px 0 68px; }
+      .slide { padding:34px 20px; }
+      .bottom-nav { height:68px; gap:10px; padding:10px 12px; }
+      .bottom-nav button { min-width:104px; padding:10px 13px; }
       .hero-grid, .two-col { grid-template-columns:1fr; }
       .hero-card { min-height:360px; }
       .route { grid-template-columns:1fr; }
@@ -135,9 +167,11 @@
       .cards { grid-template-columns:1fr; }
     }
     @media print {
-      .topbar,.progress,.prompt button { display:none!important; }
+      html,body { height:auto; overflow:visible; }
+      .topbar,.progress,.bottom-nav,.prompt button { display:none!important; }
       main { padding:0; }
-      .slide { min-height:100vh; break-after:page; padding:42px; }
+      main { position:static; overflow:visible; }
+      .slide { display:grid; min-height:100vh; height:auto; overflow:visible; break-after:page; padding:42px; }
       body { background:white; }
     }
   </style>
@@ -145,10 +179,7 @@
 <body>
   <header class="topbar">
     <div class="brand">AI 好生活<small>115 新住民記者班 Part 2</small></div>
-    <div class="controls">
-      <button id="prev" aria-label="上一頁">←</button>
-      <span id="counter">1 / 10</span>
-      <button id="next" aria-label="下一頁">→</button>
+    <div class="top-actions">
       <a class="wide" href="https://padlet.com/ab0308/115-part-2-s023h6imhc2l6mv6gqy7" target="_blank" rel="noreferrer">開啟 Padlet</a>
     </div>
   </header>
@@ -315,11 +346,16 @@
         <div class="eyebrow">AI 好生活</div>
         <h2>工具可以幫我們走得快，<br>故事要由自己說。</h2>
         <div class="big-quote">看・找・整・做・說・分享</div>
-        <p class="lead">使用鍵盤 <span class="kbd">←</span> <span class="kbd">→</span> 切換頁面，或直接上下捲動。</p>
+        <p class="lead">使用鍵盤 <span class="kbd">←</span> <span class="kbd">→</span>，或使用下方按鈕切換頁面。</p>
         <div class="tool-row" style="justify-content:center"><a class="tool" href="https://padlet.com/ab0308/115-part-2-s023h6imhc2l6mv6gqy7" target="_blank" rel="noreferrer">前往課程 Padlet</a></div>
       </div>
     </section>
   </main>
+  <nav class="bottom-nav" aria-label="簡報頁面導覽">
+    <button id="prev" aria-label="上一頁">← 上一頁</button>
+    <span id="counter" aria-live="polite">1 / 11</span>
+    <button id="next" aria-label="下一頁">下一頁 →</button>
+  </nav>
   <script>
     const slides = [...document.querySelectorAll('.slide')];
     const counter = document.querySelector('#counter');
@@ -327,10 +363,15 @@
     let active = 0;
     function update(i) {
       active = Math.max(0, Math.min(slides.length - 1, i));
+      slides.forEach((slide, index) => slide.classList.toggle('active', index === active));
       counter.textContent = `${active + 1} / ${slides.length}`;
       bar.style.width = `${((active + 1) / slides.length) * 100}%`;
+      document.querySelector('#prev').disabled = active === 0;
+      document.querySelector('#next').disabled = active === slides.length - 1;
+      slides[active].scrollTop = 0;
+      history.replaceState(null, '', `#${slides[active].id}`);
     }
-    function go(i) { update(i); slides[active].scrollIntoView({behavior:'smooth'}); }
+    function go(i) { update(i); }
     document.querySelector('#prev').addEventListener('click', () => go(active - 1));
     document.querySelector('#next').addEventListener('click', () => go(active + 1));
     addEventListener('keydown', e => {
@@ -339,16 +380,13 @@
       if (e.key === 'Home') go(0);
       if (e.key === 'End') go(slides.length - 1);
     });
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if (entry.isIntersecting) update(slides.indexOf(entry.target)); });
-    }, {threshold:.58});
-    slides.forEach(s => io.observe(s));
     document.querySelectorAll('.prompt button').forEach(btn => btn.addEventListener('click', async () => {
       const text = btn.parentElement.querySelector('pre').innerText;
       try { await navigator.clipboard.writeText(text); btn.textContent = '已複製'; setTimeout(() => btn.textContent = '複製', 1400); }
       catch { btn.textContent = '請手動選取'; }
     }));
-    update(0);
+    const initial = slides.findIndex(slide => `#${slide.id}` === location.hash);
+    update(initial >= 0 ? initial : 0);
   </script>
 </body>
 </html>
